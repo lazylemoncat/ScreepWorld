@@ -12,7 +12,6 @@ class Room_harvester extends Harvester {
         if (this.transferToContainer()) {
             return;
         }
-        this.transferToSpawn();
     }
 
     transferToExtension() {

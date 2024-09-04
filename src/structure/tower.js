@@ -6,6 +6,7 @@ class Tower extends Structure {
     }
 
     loop() {
+        this.checkEnergy()
         if (this.attack()) {
             return;
         }
@@ -15,11 +16,12 @@ class Tower extends Structure {
     }
 
     repair() {
-        const repairTarget = this.structure.room.find(FIND_STRUCTURES, { 
+        const repairTargets = this.structure.room.find(FIND_STRUCTURES, { 
             filter: structure => structure.hits < structure.hitsMax 
                     && structure.structureType != STRUCTURE_WALL
                     && structure.structureType != STRUCTURE_RAMPART
-            })[0];
+            });
+        const repairTarget = repairTargets.sort((a, b) => a.hits - b.hits)[0];
         if (repairTarget == undefined) {
             return false;
         }

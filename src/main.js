@@ -1,7 +1,9 @@
+const transfer = require('transfer_transfer');
 const harvest = require('harvest_harvest');
 const upgrade = require('upgrade_upgrade');
 const build = require('build_build');
 const loopStructures = require('structure_loopStructures');
+const EnergyQueue = require('messageQueue_energyQueue');
 
 module.exports.loop = function () {
   // 获得pixel
@@ -11,6 +13,7 @@ module.exports.loop = function () {
   
   for (roomName in Game.rooms) {
     let room = Game.rooms[roomName];
+    transfer(room);
     harvest(room);
     upgrade(room);
     build(room);
