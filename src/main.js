@@ -3,7 +3,8 @@ const harvest = require('harvest_harvest');
 const upgrade = require('upgrade_upgrade');
 const build = require('build_build');
 const loopStructures = require('structure_loopStructures');
-const EnergyQueue = require('messageQueue_energyQueue');
+const claim = require('war_claim_claim');
+const harassment = require('war_harassment_harassment');
 
 module.exports.loop = function () {
   // 获得pixel
@@ -13,12 +14,17 @@ module.exports.loop = function () {
   
   for (roomName in Game.rooms) {
     let room = Game.rooms[roomName];
+    if (room.controller == undefined || room.controller.my == false) {
+      continue;
+    }
     transfer(room);
     harvest(room);
     upgrade(room);
     build(room);
     loopStructures(room);
   }
+  claim('E28N4');
+//   harassment('E28N3', Game.rooms["E29N3"]);
 }
 
 function deleteDeadMemory() {

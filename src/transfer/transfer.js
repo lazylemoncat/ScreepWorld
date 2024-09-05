@@ -12,6 +12,7 @@ function transfer(room) {
     if (transferer.store.getUsedCapacity() == 0) {
         const container = transferer.pos.findClosestByPath(FIND_STRUCTURES, {
             filter: structure => structure.structureType == STRUCTURE_CONTAINER
+            && structure.store.getUsedCapacity(RESOURCE_ENERGY) >= transferer.store.getFreeCapacity()
         });
         if (container == undefined) {
             return;
@@ -55,11 +56,11 @@ function checkEnergyTarget(transferer) {
         return false;
     }
     const target = Game.getObjectById(transferer.memory.energyTarget);
-    if (target == undefined || target.store.getFreeCapacity() == 0) {
+    if (target == undefined || target.store.getFreeCapacity(RESOURCE_ENERGY) == 0) {
         transferer.memory.energyTarget = undefined;
-        return true;
+        return false;
     }
-    return false;
+    return true;
 }
 
 function getTarget(room, transferer) {

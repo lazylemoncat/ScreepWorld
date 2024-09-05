@@ -3,7 +3,7 @@ const EnergyQueue = require("messageQueue_energyQueue");
 class Structure {
     constructor(structure) {
         this.structure = structure;
-        this.energyRate = 0.6;
+        this.energyRate = 1;
     }
 
     loop() {
@@ -15,7 +15,6 @@ class Structure {
         const energyCapacity = this.structure.store.getCapacity(RESOURCE_ENERGY);
         if (storedEnergy < energyCapacity * this.energyRate) {
             this.sendTransferEnergyMessage(energyCapacity - storedEnergy);
-            console.log(EnergyQueue.queue.length);
         }
     }
 

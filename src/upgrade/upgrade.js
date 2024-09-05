@@ -42,6 +42,16 @@ function go_upgrade(upgrader) {
 }
 
 function go_get_energy(upgrader) {
+    const container = upgrader.room.find(FIND_STRUCTURES, {
+        filter: structure => structure.structureType == STRUCTURE_CONTAINER
+        && structure.store.getUsedCapacity(RESOURCE_ENERGY) > 0
+    })[0];
+    if (container) {
+        if (upgrader.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            upgrader.moveTo(container);
+        }
+        return;
+    }
     const spawn = upgrader.room.find(FIND_MY_SPAWNS)[0];
     if (upgrader.withdraw(spawn, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
         upgrader.moveTo(spawn);

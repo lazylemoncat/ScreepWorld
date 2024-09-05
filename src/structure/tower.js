@@ -3,6 +3,7 @@ const Structure = require('structure_structure');
 class Tower extends Structure {
     constructor(structure) {
         super(structure);
+        this.energyRate = 0.6;
     }
 
     loop() {
