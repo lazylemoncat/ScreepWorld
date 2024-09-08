@@ -1,3 +1,5 @@
+const EnergyQueue = require("messageQueue_energyQueue");
+
 class Transferer {
     constructor(creep) {
         this.creep = creep;
@@ -38,6 +40,15 @@ class Transferer {
             return false;
         }
         return true;
+    }
+
+    getTarget() {
+        const targetObject = EnergyQueue.receive("transfer", this.creep.store.getFreeCapacity());
+        if (targetObject == undefined) {
+            return undefined;
+        }
+        this.creep.memory.energyTarget = targetObject.id;
+        return targetObject;
     }
 }
 

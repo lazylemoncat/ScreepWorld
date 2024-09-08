@@ -1,19 +1,21 @@
 const { createCreep, generateBodyParts, generateName, generateMemory } = require('createCreep_createCreep');
+const Upgrader = require('upgrade_upgrader');
 
 function upgrade(room) {
-    let upgrader = room.find(FIND_MY_CREEPS, {filter: creep => creep.memory.role == 'upgrader'})[0];
-    if (upgrader == undefined) {
-        create_upgrader(room);
-        return;
-    }
-    if (check_upgrading(upgrader)) {
-        go_upgrade(upgrader);
-    } else {
-        go_get_energy(upgrader);
+    let upgraders = room.find(FIND_MY_CREEPS, {filter: 
+        creep => creep.memory.role == 'upgrader'
+    });
+    checkSpawn(room, upgraders);
+    for (const upgrader of upgraders) {
+        const upgraderObject = new Upgrader(upgrader);
+        upgraderObject.loop();
     }
 }
 
-function create_upgrader(room) {
+function checkSpawn(room, upgraders) {
+    if (upgraders.length >= 3) {
+        return;
+    }
     const spawn = room.find(FIND_MY_SPAWNS)[0];
     const body = generateBodyParts(
         energyAvailable=room.energyAvailable,
@@ -24,38 +26,6 @@ function create_upgrader(room) {
         role: 'upgrader',
     });
     createCreep(spawn, room, body, name, memory);
-}
-
-function check_upgrading(upgrader) {
-    if (upgrader.store.getFreeCapacity() == 0) {
-        upgrader.memory.upgrading = true;
-    } else if (upgrader.store.getUsedCapacity() == 0) {
-        upgrader.memory.upgrading = false;
-    }
-    return upgrader.memory.upgrading;
-}
-
-function go_upgrade(upgrader) {
-    if (upgrader.upgradeController(upgrader.room.controller) == ERR_NOT_IN_RANGE) {
-        upgrader.moveTo(upgrader.room.controller);
-    }
-}
-
-function go_get_energy(upgrader) {
-    const container = upgrader.room.find(FIND_STRUCTURES, {
-        filter: structure => structure.structureType == STRUCTURE_CONTAINER
-        && structure.store.getUsedCapacity(RESOURCE_ENERGY) > 0
-    })[0];
-    if (container) {
-        if (upgrader.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-            upgrader.moveTo(container);
-        }
-        return;
-    }
-    const spawn = upgrader.room.find(FIND_MY_SPAWNS)[0];
-    if (upgrader.withdraw(spawn, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-        upgrader.moveTo(spawn);
-    }
 }
 
 module.exports = upgrade;
