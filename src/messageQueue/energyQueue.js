@@ -15,6 +15,11 @@ class EnergyQueue {
     receive(type, amount) {
         for (let i = 0; i < this.queue.length; i++) {
             if (this.queue[i].type === type) {
+                if (Game.getObjectById(this.queue[i].id).store.getFreeCapacity(RESOURCE_ENERGY) == 0) {
+                    this.queue.splice(i, 1)[0];
+                    --i;
+                    continue;
+                }
                 return this.getMessage(i, amount);
             }
         }
@@ -45,6 +50,7 @@ class EnergyQueue {
             result = this.queue.splice(index, 1)[0];
         } else {
             result = this.queue[index];
+            this.queue[index].amount -= amount;
         }
         return result;
     }

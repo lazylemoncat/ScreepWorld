@@ -19,6 +19,9 @@ function claim(targetRoom) {
         case ERR_INVALID_TARGET:
             claimer.attackController(controller);
             break;
+        case OK:
+            claimer.suicide();
+            break;
     }
 }
 
