@@ -27,6 +27,13 @@ class Upgrader {
     }
 
     getEnergy() {
+        const storage = this.creep.room.storage;
+        if (storage) {
+            if (this.creep.withdraw(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                this.creep.moveTo(storage);
+            }
+            return;
+        }
         const container = this.creep.room.find(FIND_STRUCTURES, {
             filter: structure => structure.structureType == STRUCTURE_CONTAINER
             && structure.store.getUsedCapacity(RESOURCE_ENERGY) > 0

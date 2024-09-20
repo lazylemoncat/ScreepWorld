@@ -1,4 +1,5 @@
 const Harvester = require('harvest_harvester');
+const EnergyQueue = require('messageQueue_energyQueue');
 
 class Room_harvester extends Harvester {
     constructor(creep) {
@@ -6,7 +7,13 @@ class Room_harvester extends Harvester {
     }
 
     checkHarvesting() {
-        if (this.checkGetEnergy()) {
+        if (this.creep.store.getFreeCapacity() == null) {
+            if (this.checkContainer()) {
+                this.creep.memory.harvesting = false;
+            } else {
+                this.creep.memory.harvesting = true;
+            }
+        } else if (this.checkGetEnergy()) {
             this.creep.memory.harvesting = false;
         } else if (this.creep.store.getFreeCapacity() == 0) {
             this.creep.memory.harvesting = false;
@@ -14,6 +21,20 @@ class Room_harvester extends Harvester {
             this.creep.memory.harvesting = true;
         }
         return this.creep.memory.harvesting;
+    }
+
+    checkContainer() {
+        const source = Game.getObjectById(this.creep.memory.sourceId);
+        const container = source.pos.findInRange(FIND_STRUCTURES, 1, {
+            filter: s => s.structureType == STRUCTURE_CONTAINER
+        })[0];
+        if (container == undefined) {
+            return false;
+        }
+        if (container.store.getFreeCapacity(RESOURCE_ENERGY) == 0) {
+            return true;
+        }
+        return false;
     }
 
     checkGetEnergy() {
@@ -52,6 +73,9 @@ class Room_harvester extends Harvester {
         }
         if (this.transferToContainer()) {
             return;
+        }
+        if (this.creep.store[RESOURCE_ENERGY] == this.creep.store.getCapacity()) {
+            EnergyQueue.insertMessage('withdraw', this.creep.id, this.creep.store.getUsedCapacity());
         }
     }
 

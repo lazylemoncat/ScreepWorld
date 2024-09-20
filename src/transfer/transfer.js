@@ -13,7 +13,7 @@ function transfer(room) {
 }
 
 function checkSpawn(room, transferers) {
-    if (transferers.length >= 2) {
+    if (transferers.length >= 3) {
         return;
     }
     const spawn = room.find(FIND_MY_SPAWNS)[0];

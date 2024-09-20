@@ -1,6 +1,7 @@
 const generateBodyParts = require('createCreep_generateBodyParts');
 const generateName = require('createCreep_generateName');
 const generateMemory = require('createCreep_generateMemory');
+const calculateCost = require('createCreep_calculateCost');
 
 function createCreep(
   spawn, // spawn object
@@ -19,7 +20,7 @@ function createCreep(
     {
       memory: generateMemory(),
       energyStructures: getEnergyStructures(room),
-      directions: directions,
+      // directions: directions,
     }
   );
   return result;
@@ -52,4 +53,10 @@ function getEnergyStructures(room) {
   return extensionsNearSource.concat(extensions).concat(spawns);
 }
 
-module.exports = { createCreep, generateBodyParts, generateName, generateMemory };
+module.exports = { 
+    createCreep, 
+    generateBodyParts, 
+    generateName, 
+    generateMemory, 
+    calculateCost 
+};

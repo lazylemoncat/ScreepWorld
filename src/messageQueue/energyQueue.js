@@ -15,9 +15,8 @@ class EnergyQueue {
     receive(type, amount) {
         for (let i = 0; i < this.queue.length; i++) {
             if (this.queue[i].type === type) {
-                if (Game.getObjectById(this.queue[i].id).store.getFreeCapacity(RESOURCE_ENERGY) == 0) {
-                    this.queue.splice(i, 1)[0];
-                    --i;
+                if (this.checkMessage(type, i)) {
+                    i--;
                     continue;
                 }
                 return this.getMessage(i, amount);
@@ -44,6 +43,29 @@ class EnergyQueue {
         this.queue.push(message);
     }
 
+    checkMessage(type, index) {
+        const target = Game.getObjectById(this.queue[index].id);
+        if (target == undefined) {
+            this.queue.splice(index, 1)[0];
+            return true;
+        }
+        if (type == "transfer") {
+            if (target.store.getFreeCapacity(RESOURCE_ENERGY) == 0) {
+                this.queue.splice(index, 1)[0];
+                return true;
+            }
+            return false;
+        }
+        if (type == "withdraw") {
+            if (target.store.getUsedCapacity(RESOURCE_ENERGY) == 0) {
+                this.queue.splice(index, 1)[0];
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
+
     getMessage(index, amount) {
         let result = null;
         if (this.queue[index].amount <= amount) {
@@ -53,6 +75,16 @@ class EnergyQueue {
             this.queue[index].amount -= amount;
         }
         return result;
+    }
+
+    getSizeByType(type) {
+        let count = 0;
+        for (let i = 0; i < this.queue.length; i++) {
+            if (this.queue[i].type === type) {
+                count++;
+            }
+        }
+        return count;
     }
 }
 

@@ -11,6 +11,9 @@ class Tower extends Structure {
         if (this.attack()) {
             return;
         }
+        if (this.heal()) {
+            return;
+        }
         if (this.repair()) {
             return;
         }
@@ -27,6 +30,23 @@ class Tower extends Structure {
             return false;
         }
         this.structure.repair(repairTarget);
+        return true;
+    }
+
+    heal() {
+        const healTargets = this.structure.room.find(FIND_MY_CREEPS, {
+            filter: creep => creep.hits < creep.hitsMax
+        });
+        const healTarget = healTargets.sort((a, b) => a.hits - b.hits)[0];
+        if (healTarget == undefined) {
+            return false;
+        }
+        if (healTarget.memory.role == 'harassmenter') {
+            if (healTarget.body.find(part => part.type == HEAL && part.hits != 0) != undefined) {
+                return false;
+            }
+        }
+        this.structure.heal(healTarget);
         return true;
     }
 

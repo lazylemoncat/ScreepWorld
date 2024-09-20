@@ -27,6 +27,7 @@ function build(room) {
     if (builder.store.getUsedCapacity() == 0) {
         const storedStructure = builder.room.find(FIND_STRUCTURES, {
             filter: structure => structure.structureType == STRUCTURE_CONTAINER
+            || structure.structureType == STRUCTURE_SPAWN
         })[0];
         if (storedStructure == undefined) {
             return;

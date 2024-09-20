@@ -22,8 +22,16 @@ class Harvester {
 
     goHarvest() {
         const source = Game.getObjectById(this.creep.memory.sourceId);
+        const container = source.pos.findInRange(FIND_STRUCTURES, 1, {
+            filter: s => s.structureType == STRUCTURE_CONTAINER
+        })[0];
+        if (container && !this.creep.pos.isEqualTo(container.pos)) {
+            this.creep.moveTo(container);
+            return;
+        }
         if (this.creep.harvest(source) == ERR_NOT_IN_RANGE) {
             this.creep.moveTo(source);
+            return;
         }
     }
 

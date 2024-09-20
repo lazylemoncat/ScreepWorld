@@ -2,6 +2,9 @@ const { createCreep, generateBodyParts, generateName, generateMemory } = require
 const Upgrader = require('upgrade_upgrader');
 
 function upgrade(room) {
+    if (!checkUpgradStatus(room)) {
+        return;
+    }
     let upgraders = room.find(FIND_MY_CREEPS, {filter: 
         creep => creep.memory.role == 'upgrader'
     });
@@ -10,6 +13,14 @@ function upgrade(room) {
         const upgraderObject = new Upgrader(upgrader);
         upgraderObject.loop();
     }
+}
+
+function checkUpgradStatus(room) {
+    const site = room.find(FIND_MY_CONSTRUCTION_SITES);
+    if (site.length > 0) {
+        return false;
+    }
+    return true;
 }
 
 function checkSpawn(room, upgraders) {

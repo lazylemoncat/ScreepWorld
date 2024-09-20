@@ -1,12 +1,18 @@
 const loopRooms = require('loopRoom_loopRooms');
+const harassment = require('war_harassment_harassment');
+const attack = require('war_attack_attack');
+const attackController = require('war_attackController_attackController');
+const claim = require('war_claim_claim');
 
 module.exports.loop = function () {
-  // 获得pixel
-  getPixel();
-  // 删除死亡creep的内存
-  deleteDeadMemory();
-  
-  loopRooms();
+    // 获得pixel
+    getPixel();
+    // 删除死亡creep的内存
+    deleteDeadMemory();
+    
+    loopRooms();
+    attackController('W8S57', 'W8S56');
+    claim('W8S58', 'W8S56');
 }
 
 function deleteDeadMemory() {

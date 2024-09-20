@@ -11,16 +11,32 @@ function loopRooms() {
         if (room.controller == undefined || room.controller.my == false) {
           continue;
         }
-        roomLayoutPlanner(room);
+        if (room.find(FIND_MY_SPAWNS).length == 0) {
+          continue;
+        }
+        checkRoomStatus(room);
+        // roomLayoutPlanner(room);
         loopRoom(room);
       }
 }
 
+function checkRoomStatus(room) {
+    if (Memory.rooms[room.name] == undefined) {
+        Memory.rooms[room.name] = {};
+    }
+    let status = "upgrading";
+    const site = room.find(FIND_MY_CONSTRUCTION_SITES);
+    if (site.length > 0) {
+        status =  "building";
+    }
+    Memory.rooms[room.name].status = status;
+}
+
 function loopRoom(room) {
-    transfer(room);
     harvest(room);
-    upgrade(room);
+    transfer(room);
     build(room);
+    upgrade(room);
     loopStructures(room);
 }
 
